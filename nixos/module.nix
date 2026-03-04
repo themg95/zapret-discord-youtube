@@ -197,10 +197,13 @@ in
       "xt_multiport"
     ];
 
-    networking.firewall.extraCommands = ''
-      if ! ${lib.getExe pkgs.ipset} list nozapret >/dev/null 2>&1; then
-        ${lib.getExe pkgs.ipset} create nozapret hash:net
-      fi
-    '';
-  };
+    networking.nftables.ruleset = ''
+      table inet filter {
+        set nozapret {
+          type ipv4_addr
+          flags interval
+        }
+      }
+      '';
+    };
 }
